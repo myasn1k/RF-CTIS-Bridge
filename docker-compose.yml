@@ -1,0 +1,12 @@
+version: "3"
+
+services:
+  app:
+    build: .
+    volumes:
+      - ./files:/files
+      - ./config_vol:/config
+      - ./src:/app
+    environment:
+      PYTHONUNBUFFERED: 1
+      RW_CONFIG_PATH: /config/config.yaml

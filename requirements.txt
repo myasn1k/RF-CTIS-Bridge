@@ -1,0 +1,4 @@
+PyYAML
+requests
+rfapi
+html2text 

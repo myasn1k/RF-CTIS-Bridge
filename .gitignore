@@ -1,0 +1,4 @@
+**/__pycache__
+files/missing_entities.txt
+*.db
+config.yaml
