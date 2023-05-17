@@ -8,6 +8,8 @@ from notifications.ctis import CTIS
 
 from rfapi import ConnectApiClient
 import json, yaml
+import random
+import string
 
 logging.basicConfig(
     format="%(asctime)s [%(levelname)s] %(message)s",
@@ -30,15 +32,16 @@ def parse_docs_and_create(documents, owner):
     ctis_docs = []
     for doc in documents:
         tmp = {}
+        rand = ''.join(random.choice(string.ascii_lowercase) for i in range(16))
         if doc["title"]:
             tmp["title"] = doc["title"]
         else:
-            tmp["title"] = "NONE"
+            tmp["title"] = rand
         logging.debug("Doc title: " + tmp["title"])
         if doc["source"]:
             tmp["source"] = doc["source"]["name"]
         else:
-            tmp["source"] = "NONE"
+            tmp["source"] = rand
         logging.debug("Doc source: " + tmp["source"])
         tmp["url"] = doc["url"]
         logging.debug("Doc url: " + str(doc["url"]))
