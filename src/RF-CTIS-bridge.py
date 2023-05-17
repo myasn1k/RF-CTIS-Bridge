@@ -54,9 +54,18 @@ def parse_docs_and_create(documents, owner):
             for e in ref["entities"]:
                 tmp1["refs"].append(e["name"])
                 logging.debug(f"Entity: name: {e['name']}, type: {e['type']}, frag: {ref['fragment']}")
-                ctis_ent = ctis.add_entity(e["name"], e["type"], ref["fragment"])
-                if ctis_ent:
-                    ctis.add_relationship("related-to", ctis_dossier, "x-dossiers", ctis_ent, Config["mappings"]["entities"][e["type"]]["type"])
+                try:
+                    ctis_ent = ctis.add_entity(e["name"], e["type"], ref["fragment"])
+                    if ctis_ent:
+                        ctis.add_relationship("related-to", ctis_dossier, "x-dossiers", ctis_ent, Config["mappings"]["entities"][e["type"]]["type"])
+                except:
+                    logging.error(f"Got a NON fatal error while creating entity {e['name']} of type {e['type']} with fragment {ref['fragment']}, notifying")
+                    tb = traceback.format_exc()
+                    # send slack error notifications
+                    NotificationManager.send_error_notification(
+                            "Entity creation error", f"Entity {e['name']} of type {e['type']} with fragment {ref['fragment']}\n" + tb, fatal=False)
+                    # log exception
+                    logging.error(tb.strip())  # there is a trailing newline
             tmp["ref"].append(tmp1)
         logging.debug("Entity refs: " + str(tmp["ref"]))
         docs.append(tmp)
