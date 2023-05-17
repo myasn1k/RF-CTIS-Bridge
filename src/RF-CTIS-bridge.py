@@ -89,7 +89,7 @@ def main(argv):
 
         logging.debug("Alert title: " + alert_element["title"])
         logging.debug("Alert url: " + alert_element["url"])
-        my_alert["title"] = alert_element["title"]
+        my_alert["title"] = alert_element["title"].replace("\n", "")
         my_alert["url"] = alert_element["url"]
 
         if ctis.check_alert_exists(alert.id, my_alert["title"]):
