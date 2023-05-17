@@ -128,8 +128,6 @@ class CTIS():
         description = f"RF type: {type}\n" + html2text.html2text(description)
         json_query = [
             {
-                Config["mappings"]["entities"][type]["description"]: description,
-                Config["mappings"]["entities"][type]["param"]: param,
                 "x-sources": [
                     {
                         "source_name": "default",
@@ -142,6 +140,10 @@ class CTIS():
         ]
         if "class" in Config["mappings"]["entities"][type].keys():
             json_query[0]["identity_class"] = Config["mappings"]["entities"][type]["class"] 
+        if "description" in Config["mappings"]["entities"][type].keys():
+            json_query[0][Config["mappings"]["entities"][type]["description"]] = description 
+        if "param" in Config["mappings"]["entities"][type].keys():
+            json_query[0][Config["mappings"]["entities"][type]["param"]] = param 
 
         ok, entity = self.do_req("/" + Config["mappings"]["entities"][type]["type"], json_query)
         if ok == ReqStat.ERR:
