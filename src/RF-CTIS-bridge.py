@@ -127,6 +127,7 @@ def main(argv):
             ctis.add_relationship_al_vic("related-to", alert_ctis, "alerts", owner_ctis, "identities")
         for k, docs in ctis_docs.items():
             if docs: add_dossiers_rels(alert_ctis, docs)
+        NotificationManager.send_info_notification(f"Added new alert: {my_alert['title']} - {str(alert.id)}")
 
     NotificationManager.send_info_notification("Finished, exiting")
     logging.info("Finished, exiting")
