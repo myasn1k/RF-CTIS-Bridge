@@ -226,15 +226,18 @@ class CTIS():
 
     def check_alert_exists(self, id, title):
         cur = self.do_get(f"/alerts?where=%7B%22title%22%3A%20%22{urllib.parse.quote_plus(title + ' - ' + id)}%22%7D&page=1&max_results=25")
-        if cur["_items"]:
-            return True
-        else:
+        try:
+            if cur["_items"]:
+                return True
+            else:
+                return False
+        except:
             return False
 
-    def add_eei(self, name, url, author):
+    def add_eei(self, id, name, url, author):
         json_query = [
             {
-                "name": name,
+                "name": name + " - " + id,
                 "description": url,
                 "author": author,
                 "x-sources": [

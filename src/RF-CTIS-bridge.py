@@ -108,7 +108,7 @@ def main(argv):
         logging.debug("Alert rule url: " + alert_element["rule"]["url"])
         logging.debug("Alert rule owner: " + alert_element["rule"]["owner_name"])
         my_alert["rule"] = {"name": alert_element["rule"]["name"], "url": alert_element["rule"]["url"], "owner": alert_element["rule"]["owner_name"]}
-        eei_alert_rule = ctis.add_eei(my_alert["rule"]["name"], my_alert["rule"]["url"], my_alert["rule"]["owner"])
+        eei_alert_rule = ctis.add_eei(alert_element["rule"]["id"], my_alert["rule"]["name"], my_alert["rule"]["url"], my_alert["rule"]["owner"])
 
         ctis_docs = {}
         for entity in alert_element["entities"]:
