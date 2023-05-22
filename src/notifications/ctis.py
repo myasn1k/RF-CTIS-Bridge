@@ -234,10 +234,23 @@ class CTIS():
         except:
             return False
 
+    def check_eei_exists(self, id, title):
+        cur = self.do_get(f"/eeis?where=%7B%22name%22%3A%20%22{urllib.parse.quote_plus(title + ' - ' + id)}%22%7D&page=1&max_results=25")
+        try:
+            if cur["_items"]:
+                return cur["_items"][0]["_id"]
+            else:
+                return False
+        except:
+            return False
+
     def add_eei(self, id, name, url, author):
+        old_eei = self.check_eei_exists(id, name)
+        if old_eei:
+            return old_eei
         json_query = [
             {
-                "name": name + " - " + id,
+                "name": name + ' - ' + id,
                 "description": url,
                 "author": author,
                 "x-sources": [
