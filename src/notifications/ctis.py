@@ -141,9 +141,9 @@ class CTIS():
         if "class" in Config["mappings"]["entities"][type].keys():
             json_query[0]["identity_class"] = Config["mappings"]["entities"][type]["class"] 
         if "description" in Config["mappings"]["entities"][type].keys():
-            json_query[0][Config["mappings"]["entities"][type]["description"]] = description 
+            json_query[0][Config["mappings"]["entities"][type]["description"]] = description.replace('\n', '\r\n')
         if "param" in Config["mappings"]["entities"][type].keys():
-            json_query[0][Config["mappings"]["entities"][type]["param"]] = param 
+            json_query[0][Config["mappings"]["entities"][type]["param"]] = param
 
         ok, entity = self.do_req("/" + Config["mappings"]["entities"][type]["type"], json_query)
         if ok == ReqStat.ERR:
@@ -166,7 +166,7 @@ class CTIS():
                 "id_dossier": ''.join(random.choice(string.ascii_lowercase) for i in range(16)),
                 "originator": "ori def", #TODO originator,
                 "addressee": ["addr def"], #TODO owners,
-                "text": text
+                "text": text.replace('\n', '\r\n')
             }
         ]
 
@@ -190,7 +190,7 @@ class CTIS():
                 "alert_type": "notify-frontend",
                 "labels": ["rf"],
                 "title": name + " - " + str(id),
-                "message": message,
+                "message": message.replace('\n', '\r\n'),
                 "from": "rf",
                 "role": "analyst",
                 "x-sources": [
