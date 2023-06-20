@@ -21,6 +21,25 @@ class CTIS():
         self.url = url
         self.CTIS_login(username, password)
 
+    def set_xsources(self, json_query):
+        if not Config["xsources"]:
+            json_query[0]["x-sources"].append(
+                    {
+                        "source_name": "default",
+                        "classification": 0,
+                        "releasability": 0,
+                        "tlp": 0
+                    })
+        else:
+            for src in Config["xsources"]:
+                json_query[0]["x-sources"].append(
+                        {
+                            "source_name": src,
+                            "classification": 0,
+                            "releasability": 0,
+                            "tlp": 0
+                        })
+
     def do_req(self, url, json):
         response = requests.post(self.url + url, headers = self.headers, json = json)
         ok = ReqStat.NEW
@@ -129,15 +148,11 @@ class CTIS():
         json_query = [
             {
                 "x-sources": [
-                    {
-                        "source_name": "default",
-                        "classification": 0,
-                        "releasability": 0,
-                        "tlp": 0
-                    }
                ],
             }
         ]
+        self.set_xsources(json_query)
+
         if "class" in Config["mappings"]["entities"][type].keys():
             json_query[0]["identity_class"] = Config["mappings"]["entities"][type]["class"] 
         if "description" in Config["mappings"]["entities"][type].keys():
@@ -156,12 +171,6 @@ class CTIS():
                 "name": name,
                 "type": "x-dossier",
                 "x-sources": [
-                    {
-                        "source_name": "default",
-                        "classification": 0,
-                        "releasability": 0,
-                        "tlp": 0
-                    }
                 ],
                 "id_dossier": ''.join(random.choice(string.ascii_lowercase) for i in range(16)),
                 "originator": "ori def", #TODO originator,
@@ -169,6 +178,8 @@ class CTIS():
                 "text": text.replace('\n', '\r\n')
             }
         ]
+
+        self.set_xsources(json_query)
 
         ok, dossier = self.do_req("/x-dossiers", json_query)
         if ok == ReqStat.ERR:
@@ -194,15 +205,10 @@ class CTIS():
                 "from": "rf",
                 "role": "analyst",
                 "x-sources": [
-                    {
-                        "source_name": "default",
-                        "classification": 0,
-                        "releasability": 0,
-                        "tlp": 0
-                    }
                 ]
             }
         ]
+        self.set_xsources(json_query)
 
         ok, alert = self.do_req("/alerts", json_query)
         if ok == ReqStat.ERR:
@@ -254,15 +260,10 @@ class CTIS():
                 "description": url,
                 "author": author,
                 "x-sources": [
-                    {
-                        "source_name": "default",
-                        "classification": 0,
-                        "releasability": 0,
-                        "tlp": 0
-                    }
                 ]
             }
         ]
+        self.set_xsources(json_query)
 
         ok, eei = self.do_req("/eeis", json_query)
         if ok == ReqStat.ERR:

@@ -7,9 +7,13 @@ from notifications import NotificationManager
 from notifications.ctis import CTIS
 
 from rfapi import ConnectApiClient
+import re
 import json, yaml
 import random
 import string
+from datetime import datetime
+from datetime import timedelta
+from pathlib import Path
 
 logging.basicConfig(
     format="%(asctime)s [%(levelname)s] %(message)s",
@@ -82,8 +86,19 @@ def main(argv):
 
     NotificationManager.send_info_notification("Starting sync")
 
-    alerts = rf.search_alerts(freetext="",limit=100).entities
+    today = datetime.today().strftime("%Y-%m-%d")
+    yesterday = (datetime.today() - timedelta(days=1)).strftime("%Y-%m-%d")
+    alerts_file = Path(f"/files/{today}.txt")
+    alerts_file_old = Path(f"/files/{yesterday}.txt")
+    if not alerts_file.is_file():
+        alerts_file.touch()
+        if alerts_file_old.is_file(): alerts_file_old.unlink()
+    old_alerts = set(line.strip() for line in open(f"/files/{today}.txt"))
+    alerts = rf.search_alerts(triggered=today, freetext="", limit=100000).entities
+
     for alert in alerts:
+        if alert["id"] in old_alerts: continue
+        Config["xsources"] = re.findall("\[(.*?)\]", alert["title"])
         my_alert = {}
         alert_element = rf.lookup_alert(alert.id)["data"]
 
@@ -128,6 +143,8 @@ def main(argv):
         for k, docs in ctis_docs.items():
             if docs: add_dossiers_rels(alert_ctis, docs)
         NotificationManager.send_info_notification(f"Added new alert: {my_alert['title']} - {str(alert.id)}")
+        with open(f"/files/{today}.txt", "a") as out:
+            out.write(f"{alert['id']}\n")
 
     NotificationManager.send_info_notification("Finished, exiting")
     logging.info("Finished, exiting")
