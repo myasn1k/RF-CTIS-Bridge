@@ -22,7 +22,7 @@ class CTIS():
         self.CTIS_login(username, password)
 
     def set_xsources(self, json_query):
-        if not Config["xsources"]:
+        if not Config["xsources"] or "ALL" in Config["xsources"]:
             json_query[0]["x-sources"].append(
                     {
                         "source_name": "default",
