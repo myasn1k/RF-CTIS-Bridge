@@ -22,8 +22,3 @@ mappings:
       type: ex_type # Ctis destination entity type (api endpoint)
       param: ex_param # Ctis destination parameter name of the RF main entity field
       description: ex_description # Ctis destination parameter name of the RF entity description
-  identities: # TODO
-    id1: A # RF identity - Ctis identity
-    id2: B
-    id3: ...
-  

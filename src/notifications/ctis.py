@@ -108,8 +108,6 @@ class CTIS():
         res = self.check_aliases("/identities", name)
         if res != None:
             return res
-        if name in Config["mappings"]["identities"].keys():
-            name = Config["mappings"]["identities"][name]
         json_query = [
             {
                 "confidence": 100,
