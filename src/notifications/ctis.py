@@ -32,6 +32,7 @@ class CTIS():
                     })
         else:
             for src in Config["xsources"]:
+                if not self.check_xsource_exists(src): continue
                 json_query[0]["x-sources"].append(
                         {
                             "source_name": src,
@@ -39,6 +40,14 @@ class CTIS():
                             "releasability": 0,
                             "tlp": 0
                         })
+        if not json_query[0]["x-sources"]:
+            json_query[0]["x-sources"].append(
+                    {
+                        "source_name": "IOC_Private",
+                        "classification": 0,
+                        "releasability": 0,
+                        "tlp": 0
+                    })
 
     def do_req(self, url, json):
         response = requests.post(self.url + url, headers = self.headers, json = json)
@@ -240,6 +249,16 @@ class CTIS():
 
     def check_eei_exists(self, id, title):
         cur = self.do_get(f"/eeis?where=%7B%22name%22%3A%20%22{urllib.parse.quote_plus(title + ' - ' + id)}%22%7D&page=1&max_results=25")
+        try:
+            if cur["_items"]:
+                return cur["_items"][0]["_id"]
+            else:
+                return False
+        except:
+            return False
+
+    def check_xsource_exists(self, name):
+        cur = self.do_get(f"/eeis?where=%7B%22name%22%3A%20%22{name}%22%7D&page=1&max_results=25")
         try:
             if cur["_items"]:
                 return cur["_items"][0]["_id"]
