@@ -25,7 +25,7 @@ class CTIS():
         if not Config["xsources"] or "ALL" in Config["xsources"]:
             json_query[0]["x-sources"].append(
                     {
-                        "source_name": "default",
+                        "source_name": "IOC_Private",
                         "classification": 0,
                         "releasability": 0,
                         "tlp": 0

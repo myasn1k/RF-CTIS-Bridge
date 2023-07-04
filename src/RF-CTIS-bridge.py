@@ -98,7 +98,10 @@ def main(argv):
 
     for alert in alerts:
         if alert["id"] in old_alerts: continue
-        Config["xsources"] = re.findall("\[(.*?)\]", alert["title"])
+        try:
+            Config["xsources"] = re.findall("\[(.*?)\]", alert["title"])
+        except:
+            Config["xsources"] = []
         my_alert = {}
         alert_element = rf.lookup_alert(alert.id)["data"]
 
